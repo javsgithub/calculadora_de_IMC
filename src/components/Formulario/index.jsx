@@ -1,40 +1,40 @@
 import { useState } from "react";
 
 const Formulario = () => {
-    const [Peso, setPeso] = useState("");
-    const [Altura, setAltura] = useState("");
-    const [Resultado, setResultado] = useState("")
-    const [Classificacao, setClassificacao] = useState("")
+    const [peso, setPeso] = useState("");
+    const [altura, setAltura] = useState("");
+    const [resultado, setResultado] = useState("")
     const [mostraImc, setMostraIMC] = useState("");
+    const [classificacaoTab, setClassificacaoTab] = useState("")
 
     const calculaIndice = () => {
-        const IMC = Peso / (Altura*Altura);
+        const IMC = peso / (altura * altura);
         const IMCRounded = IMC.toFixed(1);
         return setResultado(IMCRounded);
     }
 
     const exibeIndice = () => {
-        return setMostraIMC(`Seu índice de Massa Corpórea é: ${Resultado}`);
+        return setMostraIMC(`Seu índice de Massa Corpórea é: ${resultado}`);
     }
 
     const classificaIndice = () => {
-        if (Resultado < 18.5) {
-            return  setClassificacao("Você está com baixo Peso.");
+        if (resultado < 18.5) {
+            return  setClassificacaoTab("Você está com baixo Peso.");
 
-        } else if  (Resultado >= 18.5 && Resultado < 24.9) {
-            return setClassificacao("Você está no peso adequado (Eutrofia).");
+        } else if  (resultado >= 18.5 && resultado < 24.9) {
+            return setClassificacaoTab("Você está no peso adequado (Eutrofia).");
 
-        } else if  (Resultado >= 25.0 && Resultado < 29.9) {
-            return setClassificacao("Você está com sobrepeso.");
+        } else if  (resultado >= 25.0 && resultado < 29.9) {
+            return setClassificacaoTab("Você está com sobrepeso.");
 
-        } else if  (Resultado >= 30.0 && Resultado < 34.9) {
-            return setClassificacao("Você está com obesidade grau 1.");
+        } else if  (resultado >= 30.0 && resultado < 34.9) {
+            return setClassificacaoTab("Você está com obesidade grau 1.");
 
-        } else if  (Resultado >= 35.0 && Resultado < 39.9) {
-            return setClassificacao("Você está com obesidade grau 2.");
+        } else if  (resultado >= 35.0 && resultado < 39.9) {
+            return setClassificacaoTab("Você está com obesidade grau 2.");
 
         } else {
-            return setClassificacao("Você está com obesidade mórbida.");
+            return setClassificacaoTab("Você está com obesidade mórbida.");
         }
     }
 
@@ -42,30 +42,44 @@ const Formulario = () => {
         setPeso("");
         setAltura("");
         setMostraIMC("");
-        setClassificacao("");
+        setClassificacaoTab("");
+    }
+
+    const calculaEMostra = (e) => {        
+        e.preventDefault();
+
+        if (peso && altura > 0) {
+            calculaIndice(); 
+            exibeIndice();
+            classificaIndice();
+            
+        } else {
+            setMostraIMC("Por favor, digite os valores para que o cálculo seja efetuado!");
+            setClassificacaoTab("");
+        }
     }
 
     return (
         <>
-            <form class="mt-5">
-                <div class="row">
-                    <div class="col-3">
-                        <input required type="number" value={Peso} onChange={(e) => setPeso(parseFloat(e.target.value))} class="form-control" placeholder="Digite o seu peso"/>
+            <form>
+                <div>
+                    <div>
+                        <input type="number" value={peso} onChange={({target}) => setPeso(parseFloat(target.value))} placeholder="Digite o seu peso em kg"/>
                     </div>
-                    <div class="col-3">
-                        <input required type="number" value={Altura} onChange={(e) => setAltura(parseFloat(e.target.value))} class="form-control" placeholder="Digite a sua altura"/>
+                    <div>
+                        <input type="number" value={altura} onChange={({target}) => setAltura(parseFloat(target.value))} placeholder="Digite a sua altura em cm"/>
                     </div>
-                    <div class="col-2">
-                        <button type="button" onClick={(e) => {e.preventDefault(); calculaIndice(); classificaIndice(); exibeIndice()}} class="btn btn-primary form control">Calcular IMC</button>  
+                    <div>
+                        <button type="button" onClick={calculaEMostra}>Calcular IMC</button>  
                     </div>
-                    <div class="col-2">
-                        <button type="button" onClick={(e) => {e.preventDefault(); limpaFormulario();}} class="btn btn-primary form control">Limpar</button>  
+                    <div>
+                        <button type="button" onClick={(e) => {e.preventDefault(); limpaFormulario();}}>Limpar</button>  
                     </div>                    
                 </div>
                 {
                     <div>
                         <p><b>{mostraImc}</b></p>
-                        <p><b>{Classificacao}</b></p>
+                        <p><b>{classificacaoTab}</b></p>
                     </div>
                 }
             </form>
